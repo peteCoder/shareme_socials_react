@@ -9,6 +9,7 @@ import logo from '../assets/logo.png';
 // Components
 import { Sidebar, UserProfile } from '../components';
 
+// Containers
 import Pins from './Pins';
 
 // Client
