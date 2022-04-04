@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import {client} from '../client';
 import MasonryLayout from './MasonryLayout';
 import Spinner from './Spinner';
+import { searchQuery } from '../utils/data';
 
 
 const Feed = () => {
@@ -12,7 +13,7 @@ const Feed = () => {
     setLoading(true);
     if (categoryId){
       const query = searchQuery(categoryId);
-      
+
 
     } else{}
   }, [categoryId])
