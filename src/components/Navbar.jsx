@@ -13,7 +13,7 @@ const Navbar = ({ searchTerm, setSearchTerm, user }) => {
     <div className='flex gap-2 md:gap-5 w-full mt-5 pb-7'>
       <div className="flex justify-start items-center w-full px-2 rounded-md bg-white outline-none border-none focus-within:shadow-sm">
         <IoMdSearch fontSize={21} className="ml-1" />
-        <input 
+        <input
           type="text"
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search"
@@ -28,7 +28,7 @@ const Navbar = ({ searchTerm, setSearchTerm, user }) => {
         <Link to='create-pin' className="bg-black text-white rounded-lg w-12 h-12 md:w-14 md:h-12 flex items-center justify-center">
           <IoMdAdd fontSize={21} />
         </Link>
-        
+
       </div>
     </div>
   )

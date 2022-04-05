@@ -21,9 +21,14 @@ function Pin({ pin: { postedBy, image, _id, destination, save } }) {
 
     const user = fetchUser();
 
-    const alreadySaved = save?.filter((item) => item.postedBy._id === user.googleId); // Continue from here
+    // console.log(save) // Why does SAVE return null? 
+    // Save is an array, but will return null if there is nothing in the array.
+    // Error: Would return null. Null do not have length property 
+    // That is why the tenery conditional operator is used for error handling below.
+    // The tenery NOT (!!) is used to return true if false -> !false or false if true -> !true
 
-     
+    const alreadySaved = (save !== null) ? !!((save?.filter((item) => item.postedBy._id === user.googleId)).length) : false; // Continue from here
+    
 
 
     return (
@@ -49,10 +54,10 @@ function Pin({ pin: { postedBy, image, _id, destination, save } }) {
                                     className="bg-white w-9 h-9 rounded-full flex items-center justify-center text-black text-xl opacity-75 hover:opacity-100 hover:shadow-md outline-none"
                                 > <MdDownloadForOffline /> </a>
                             </div>
-                            {alreadySaved?.length !== 0 ? (
-                                <button>Saved</button>
+                            {alreadySaved ? (
+                                <button className='bg-white'>Saved</button>
                             ) : (
-                                <button>Save</button>
+                                <button className='bg-white'>Save</button>
                             )}
                         </div>
                     </div>
