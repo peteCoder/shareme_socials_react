@@ -27,9 +27,9 @@ function Pin({ pin: { postedBy, image, _id, destination, save } }) {
     // That is why the tenery conditional operator is used for error handling below.
     // The tenery NOT (!!) is used to return true if false -> !false or false if true -> !true
 
-    const alreadySaved = (save !== null) ? !!((save?.filter((item) => item.postedBy._id === user.googleId)).length) : false; // Continue from here
+    const alreadySaved = !!((save?.filter((item) => item.postedBy._id === user.googleId))?.length); // Continue from here
     
-
+    // console.log(alreadySaved)
 
     return (
         <div className='m-2 '>
