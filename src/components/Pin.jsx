@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 // React Icons
 import { MdDownloadForOffline } from 'react-icons/md';
 import { AiTwotoneDelete } from 'react-icons/ai';
-import { BsFillArrowUpCircleFill } from 'react-icons/bs';
+import { BsFillArrowUpRightCircleFill } from 'react-icons/bs';
 
 // fetchUserInfo
 import { fetchUser } from '../utils/fetchUser';
@@ -27,9 +27,39 @@ function Pin({ pin: { postedBy, image, _id, destination, save } }) {
     // That is why the tenery conditional operator is used for error handling below.
     // The tenery NOT (!!) is used to return true if false -> !false or false if true -> !true
 
-    const alreadySaved = !!((save?.filter((item) => item.postedBy._id === user.googleId))?.length); // Continue from here
-    
-    // console.log(alreadySaved)
+    const alreadySaved = !!((save?.filter((item) => item?.postedBy?._id === user?.googleId))?.length);
+
+    // SavePin Func
+    const savePin = (id) => {
+        if (!alreadySaved) {
+            setSavingPost(true)
+
+            client
+                .patch(id)
+                .setIfMissing({ save: [] })
+                .insert('after', 'save[-1]', [{
+                    _key: uuidv4(),
+                    userId: user?.googleId,
+                    postedBy: {
+                        _type: 'postedBy',
+                        _ref: user?.googleId
+                    }
+                }]).commit()
+                .then(() => {
+                    window.location.reload();
+                    setSavingPost(false)
+                })
+        }
+    }
+
+    // deletePin Func
+    const deletePin = (id) => {
+        client
+            .delete(id)
+            .then(() => {
+                window.location.reload();
+            })
+    }
 
     return (
         <div className='m-2 '>
@@ -55,14 +85,69 @@ function Pin({ pin: { postedBy, image, _id, destination, save } }) {
                                 > <MdDownloadForOffline /> </a>
                             </div>
                             {alreadySaved ? (
-                                <button className='bg-white'>Saved</button>
+                                <button
+
+                                    type='button' className='bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 rounded-3xl hover:shadow-md outline-none'>
+                                    {save?.length}    Saved
+                                </button>
                             ) : (
-                                <button className='bg-white'>Save</button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        savePin(_id);
+                                    }}
+
+                                    type='button'
+                                    className='bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 rounded-3xl hover:shadow-md outline-none'
+                                >
+                                    Save
+                                </button>
                             )}
                         </div>
+
+                        <div className='flex justify-between absolute items-center gap-2 w-full bottom-1 left-1'>
+                            {destination && (
+                                <a 
+                                    href={destination} 
+                                    target='_blank' 
+                                    rel="noreferrer"
+                                    className='bg-white flex items-center gap-2 text-black font-bold p-2 pl-4 pr-4 rounded-full opacity-70 hover:opacity-100 hover:shadow-md'
+                                >
+                                    <BsFillArrowUpRightCircleFill />
+                                    {destination.length > 20 ? destination.slice(8, 14) : destination.slice(8)}
+                                </a>
+                            )}
+
+                            {postedBy?._id === user?.googleId &&(
+                                <button 
+                                onClick={
+                                    (e) => {
+                                        e.stopPropagation();
+                                        deletePin(_id);
+                                    }
+                                }
+                                className='bg-red-500 p-2 rounded-full flex items-center justify-center text-white text-xl opacity-75 hover:opacity-100 mr-3 hover:shadow-md outline-none'
+                                type='button'>
+                                    <AiTwotoneDelete />
+                                </button>
+                            )}
+                        </div>
+                        
                     </div>
+                    
                 )}
+
+                
             </div>
+
+            <Link to={`user-profile/${postedBy?.id}`} className="flex gap-2 items-center mt-2 z-100" >
+                <img 
+                    className='w-8 h-8 rounded-full object-cover bg-red-500'
+                    src={postedBy?.image} 
+                    alt="user-profile"
+                />
+                <p className='font-light capitalize'>{postedBy?.userName}</p>
+             </Link>
 
 
 
